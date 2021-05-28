@@ -8,10 +8,20 @@ df = data.frame(data, row.names = NULL, check.rows = FALSE, check.names = TRUE, 
 # print(df)
 
 # dat = data.frame(x, y = as.factor(target))
-df <- df[1:10000,]
+df <- df[1:1000,]
 # print(df)
-svmfit = svm(target ~ ., data = df, kernel = "linear", cost = 10, scale = FALSE)
+
+n_train  <-  round(0.5*nrow(df))
+df_train  <-  df[c(0:n_train),]
+df_test   <- df[-c(0:n_train),]
+
+svmfit = svm(target ~ ., data = df_train, kernel = "linear", cost = 10, scale = FALSE)
 print(svmfit)
+
+
+# datatest = read.csv("../Datasets/JobChanges/aug_test.csv", header=T, sep=",")
+# dft = data.frame(datatest, row.names = NULL, check.rows = FALSE, check.names = TRUE, stringsAsFactors = default.stringsAsFactors())
+predict(svmfit, df_test)
 
 # # x <- data.matrix(DATA[,-c(1)])
 # x <- apply(as.matrix(DATA[,-c(1)]), 2, as.numeric)
