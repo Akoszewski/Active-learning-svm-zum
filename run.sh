@@ -1,1 +1,1 @@
-cd src; Rscript Main.r; cd ..;
+clear; cd src; Rscript Main.r; cd ..;
