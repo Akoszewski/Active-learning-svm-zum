@@ -3,10 +3,15 @@ source("utils.r")
 data = read.csv("../Datasets/JobChanges/aug_train.csv", header=T, sep=",")
 df = data.frame(data, row.names = NULL, check.rows = FALSE, check.names = TRUE, stringsAsFactors = default.stringsAsFactors())
 
-CRITERIA <- df[c(1),-c(1:2)]
-df <- df[-c(1), -c(1)]
-print(df)
+# CRITERIA <- df[c(1),-c(1:2)]
+# df <- df[-c(1), -c(1)]
+# print(df)
 
+# dat = data.frame(x, y = as.factor(target))
+df <- df[1:10000,]
+# print(df)
+svmfit = svm(target ~ ., data = df, kernel = "linear", cost = 10, scale = FALSE)
+print(svmfit)
 
 # # x <- data.matrix(DATA[,-c(1)])
 # x <- apply(as.matrix(DATA[,-c(1)]), 2, as.numeric)
