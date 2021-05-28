@@ -1,1 +1,1 @@
-cd src; Rscript Main.r; cd ..;
+cd src; Rscript Main-arek.r; cd ..;
