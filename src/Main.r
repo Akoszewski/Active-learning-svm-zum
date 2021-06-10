@@ -1,3 +1,5 @@
+source("utils.r")
+
 library("randomForest");library("caret");library("pROC");library("ROCR");
 library("plyr");library("missForest"); library("gbm");library("pdp");
 library("ggplot2"); library("iml");library("dplyr");library("kernlab");
@@ -144,23 +146,6 @@ print(model)
 
 predict(model, newdata = validating_set, probability = TRUE)
 
-## ------------------------------------------------------------------------
-## ---------------------------entropy--------------------------------------
-## ------------------------------------------------------------------------
 
-entropy <- function(vect) {
-  A <- unique(vect)
-  entropy <- 0
-  for (v in A) {
-    nom <- sum(vect == v)
-    denom <- length(vect)
-    Ps <- nom/denom
-    skladnik <- -Ps*log2(Ps)
-    entropy <- entropy + skladnik
-    if (!isSilent) print(paste("-", nom, "/", denom, "*log", nom, "/", denom, "=", round(skladnik, digits = 3)))
-  }
-  # entropy <- round(entropy, digits = 2)
-  if (!isSilent) print(paste("=", entropy))
-  return (entropy)
-}
+
 
