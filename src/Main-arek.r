@@ -1,6 +1,8 @@
 source("utils.r")
 source("PrepareData.r")
 
+k <- 10
+
 raw_data = read.csv("../Datasets/JobChanges/aug_train.csv", header=T, sep=",", na.strings=c("","NA"))
 raw_data <- raw_data[1:3000,]
 data <- prepareData(raw_data)
@@ -57,13 +59,17 @@ print(paste("Accuracy:", gsub(" ", "", paste(accuracy * 100, "%"))))
 
 probabs <- attr(pred_validation, "probabilities");
 scores <- abs(probabs[,1] - probabs[,2])
-scores_sorted <- sort(scores)
-head(scores_sorted)
+
+scores_df <- data.frame(1:nrow(validating_set), probabs, scores)
+colnames(scores_df) <- c('Index', 'Probability', 'Score')
+scores_df <- scores_df[order(scores),]
+scores_df_k <- scores_df[1:k,]
+
+chosen_samples <- validating_set[scores_df_k$Index,]
 
 
-
-
-
-
+# --------------------------------------------------------------------------------
+## -----Przeniesienie wybranych próbek ze zbioru walidacyjnego do treningowego----
+## -------------------------------------------------------------------------------
 
 
