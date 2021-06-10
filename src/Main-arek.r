@@ -7,7 +7,6 @@ source("PrepareData.r")
 k <- 10
 
 raw_data = read.csv("../Datasets/JobChanges/aug_train.csv", header=T, sep=",", na.strings=c("","NA"))
-raw_data <- raw_data[1:3000,]
 data <- prepareData(raw_data)
 
 ## --------------------------------------------------------------------------------
@@ -31,6 +30,8 @@ initial_train_size <- 30
 training_set <- data_pool[1:initial_train_size, ]; # str(training_set)
 validating_set <- data_pool[-initial_train_size, ]; # str(validating_set)
 
+for (i in 1:1000) {
+
 ## ------------------------------------------------------------------------
 ## -----------Trenowanie modelu za pomocą zbioru trenującego---------------
 ## ------------------------------------------------------------------------
@@ -53,7 +54,6 @@ results <- data.frame(pred_test, data_test$target)
 colnames(results) <- c('Predicted', 'Actual')
 
 accuracy <- GetAccuracy(results)
-print(accuracy)
 print(paste("Accuracy:", gsub(" ", "", paste(accuracy * 100, "%"))))
 
 ## --------------------------------------------------------------------------------
@@ -79,3 +79,5 @@ print(paste("training data size", nrow(training_set)))
 training_set <- rbind(training_set, chosen_samples)
 validating_set <- validating_set[-scores_df_k$Index,]
 
+print("")
+}
