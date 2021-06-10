@@ -95,16 +95,16 @@ str(data)
 
 #split into testing and training data
 ## 75% of the sample size
-smp_size_mort <- floor(0.75 * nrow(data))
+smp_size_target <- floor(0.75 * nrow(data))
 
 
 ## set the seed to make your partition reproducible
 set.seed(123)
-train_ind_mort <- sample(seq_len(nrow(data)), size = smp_size_mort)
-train_ind_mort <- sample(seq_len(nrow(data)), size = smp_size_mort)
+train_ind_target <- sample(seq_len(nrow(data)), size = smp_size_target)
+train_ind_target <- sample(seq_len(nrow(data)), size = smp_size_target)
 
-train_mort <- data[train_ind_mort, ]
-test_mort <- data[-train_ind_mort, ]
+train_target <- data[train_ind_target, ]
+test_target <- data[-train_ind_target, ]
 
 
 ## ------------------------------------------------------------------------
@@ -131,7 +131,7 @@ mod_gbm_mort
 summary(mod_gbm_mort)
 #check perfomance
 getTrainPerf(mod_gbm_mort)
-pred_mort <- predict(mod_gbm_mort,test_mort )
+pred_mort <- predict(mod_gbm_mort,test_target )
 
 #better performance than SVM RMSE = 18
 
