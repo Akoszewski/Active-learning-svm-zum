@@ -55,3 +55,15 @@ print(paste("Accuracy:", gsub(" ", "", paste(accuracy * 100, "%"))))
 ## -----------Wybranie k próbek niosących najwięcej informacji---------------------
 ## --------------------------------------------------------------------------------
 
+probabs <- attr(pred_validation, "probabilities");
+scores <- abs(probabs[,1] - probabs[,2])
+scores_sorted <- sort(scores)
+head(scores_sorted)
+
+
+
+
+
+
+
+
