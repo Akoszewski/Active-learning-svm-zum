@@ -20,31 +20,38 @@ data_test <- data[-test_idx,]
 ## set the seed to make your partition reproducible
 set.seed(123)
 
-onePercentOfSamples <- floor(0.1 * nrow(data_pool))
-train_idx <- sample(seq_len(nrow(data_pool)), size = onePercentOfSamples)
+initial_train_size <- floor(0.01 * nrow(data_pool))
+train_idx <- sample(seq_len(nrow(data_pool)), size = initial_train_size)
 
 training_set <- data_pool[train_idx, ]; # str(training_set)
 validating_set <- data_pool[-train_idx, ]; # str(validating_set)
-correct_answers <- validating_set$target
-validating_set$target <- NULL
 
 ## ------------------------------------------------------------------------
 ## -----------Trenowanie modelu za pomocą zbioru trenującego---------------
 ## ------------------------------------------------------------------------
 
-model <- svm(target ~ ., data = training_set, kernel = "linear")
+model <- svm(target ~ ., data = training_set, kernel = "linear", probability = TRUE)
 print(model)
 
 ## --------------------------------------------------------------------------------
-## --------------Predykcja na zbiorze walidacyjnym---------------
+## ----------------------Predykcja na zbiorze walidacyjnym-------------------------
 ## --------------------------------------------------------------------------------
 
-predict(model, newdata = validating_set)
-pred <- predict(model, newdata = validating_set)
-pred_rounded <-round(pred)
-results <- data.frame(pred_rounded, correct_answers)
+pred_validation <- predict(model, validating_set, probability = TRUE)
+
+## --------------------------------------------------------------------------------
+## -----------Użycie modelu na zbiorze testowym i zmierzenie wydajności------------
+## --------------------------------------------------------------------------------
+
+pred_test <- predict(model, data_test)
+results <- data.frame(pred_test, data_test$target)
 colnames(results) <- c('Predicted', 'Actual')
 
 accuracy <- GetAccuracy(results)
 print(accuracy)
 print(paste("Accuracy:", gsub(" ", "", paste(accuracy * 100, "%"))))
+
+## --------------------------------------------------------------------------------
+## -----------Wybranie k próbek niosących najwięcej informacji---------------------
+## --------------------------------------------------------------------------------
+

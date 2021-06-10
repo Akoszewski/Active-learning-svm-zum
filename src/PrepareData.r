@@ -73,6 +73,6 @@ prepareData <- function(df) {
                                     is.na(company_size),
                                     v))
     df$company_size = as.factor(df$company_size)
-
+    df$target = as.factor(df$target)
     return (df)
 }
