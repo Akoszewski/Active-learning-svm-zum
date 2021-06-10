@@ -2,9 +2,16 @@ source("utils.r")
 source("PrepareData.r")
 
 raw_data = read.csv("../Datasets/JobChanges/aug_train.csv", header=T, sep=",", na.strings=c("","NA"))
-#df <- df[1:3000,]
+raw_data <- raw_data[1:3000,]
 data <- prepareData(raw_data)
-#df <- df[1:3000,]
+
+## --------------------------------------------------------------------------------
+## ---------------- Podzielenie zbioru na pule i zbior testowy --------------------
+## --------------------------------------------------------------------------------
+
+test_idx <- 0.8 * nrow(data) # ostatnie 20% danych to zbior testowy
+data_pool <- data[1:test_idx,]
+data_test <- data[-test_idx,]
 
 ## --------------------------------------------------------------------------------
 ## --Wybranie k próbek z puli do początkowego zbioru trenującego i podpisanie ich--
@@ -13,11 +20,11 @@ data <- prepareData(raw_data)
 ## set the seed to make your partition reproducible
 set.seed(123)
 
-onePercentOfSamples <- floor(0.1 * nrow(data))
-train_idx <- sample(seq_len(nrow(data)), size = onePercentOfSamples)
+onePercentOfSamples <- floor(0.1 * nrow(data_pool))
+train_idx <- sample(seq_len(nrow(data_pool)), size = onePercentOfSamples)
 
-training_set <- data[train_idx, ]; # str(training_set)
-validating_set <- data[-train_idx, ]; # str(validating_set)
+training_set <- data_pool[train_idx, ]; # str(training_set)
+validating_set <- data_pool[-train_idx, ]; # str(validating_set)
 correct_answers <- validating_set$target
 validating_set$target <- NULL
 
