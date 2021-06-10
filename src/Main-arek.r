@@ -1,5 +1,8 @@
+rm(list = ls())
+
 source("utils.r")
 source("PrepareData.r")
+
 
 k <- 10
 
@@ -22,11 +25,11 @@ data_test <- data[-test_idx,]
 ## set the seed to make your partition reproducible
 set.seed(123)
 
-initial_train_size <- floor(0.01 * nrow(data_pool))
-train_idx <- sample(seq_len(nrow(data_pool)), size = initial_train_size)
+initial_train_size <- 30
+#train_idx <- sample(seq_len(nrow(data_pool)), size = initial_train_size)
 
-training_set <- data_pool[train_idx, ]; # str(training_set)
-validating_set <- data_pool[-train_idx, ]; # str(validating_set)
+training_set <- data_pool[1:initial_train_size, ]; # str(training_set)
+validating_set <- data_pool[-initial_train_size, ]; # str(validating_set)
 
 ## ------------------------------------------------------------------------
 ## -----------Trenowanie modelu za pomocą zbioru trenującego---------------
@@ -67,9 +70,12 @@ scores_df_k <- scores_df[1:k,]
 
 chosen_samples <- validating_set[scores_df_k$Index,]
 
+print(paste("training data size", nrow(training_set)))
 
 # --------------------------------------------------------------------------------
 ## -----Przeniesienie wybranych próbek ze zbioru walidacyjnego do treningowego----
 ## -------------------------------------------------------------------------------
 
+training_set <- rbind(training_set, chosen_samples)
+validating_set <- validating_set[-scores_df_k$Index,]
 
