@@ -4,8 +4,6 @@ source("utils.r")
 source("PrepareData.r")
 source("ActiveLearningTest.r")
 
-library('ggplot2')
-
 raw_data = read.csv("../Datasets/JobChanges/aug_train.csv", header=T, sep=",", na.strings=c("","NA"))
 #raw_data <- raw_data[1:3000,]
 data <- prepareData(raw_data)
