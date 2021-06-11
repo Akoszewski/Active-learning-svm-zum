@@ -118,7 +118,7 @@ colnames(accuracies_random) = cols_random
 colnames(accuracies_conf) = cols_conf
 
 p = ggplot() + 
-  geom_line(data = accuracies_random, aes(x = sample_count, y = accuracies_random), color = "blue") +
-  geom_line(data = accuracies_conf, aes(x = sample_count, y = accuracies_conf), color = "red") +
+  geom_line(data = accuracies_random, aes(x = 1:k:100, y = accuracies_random), color = "blue") +
+ # geom_line(data = accuracies_conf, aes(x = sample_count, y = accuracies_conf), color = "red") +
   xlab('sample_count') +
   ylab('accuracies_conf')

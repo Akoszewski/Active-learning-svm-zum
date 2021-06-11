@@ -1,7 +1,8 @@
 source("utils.r")
 
-ActiveLearningTest <- function(data, initial_train_size, k, iterations) {
+ActiveLearningTest <- function(data, initial_train_size, k, iterations, random) {
     accuracies <- c()
+
 
     ## --------------------------------------------------------------------------------
     ## ---------------- Podzielenie zbioru na pule i zbior testowy --------------------
@@ -14,12 +15,14 @@ ActiveLearningTest <- function(data, initial_train_size, k, iterations) {
     ## --------------------------------------------------------------------------------
     ## --Wybranie k próbek z puli do początkowego zbioru trenującego i podpisanie ich--
     ## --------------------------------------------------------------------------------
+    
+    set.seed(1234)
 
     training_set <- data_pool[1:initial_train_size, ]; # str(training_set)
     validating_set <- data_pool[-initial_train_size, ]; # str(validating_set)
 
     # loops <- nrow(validating_set)/k
-
+    sample_count <- c()
     for (i in 1:iterations) {
 
     ## ------------------------------------------------------------------------
@@ -34,7 +37,6 @@ ActiveLearningTest <- function(data, initial_train_size, k, iterations) {
     ## --------------------------------------------------------------------------------
 
     pred_validation <- predict(model, validating_set, probability = TRUE)
-    sapply(data,class)
 
     ## --------------------------------------------------------------------------------
     ## -----------Użycie modelu na zbiorze testowym i zmierzenie wydajności------------
@@ -46,6 +48,7 @@ ActiveLearningTest <- function(data, initial_train_size, k, iterations) {
 
     accuracy <- GetAccuracy(results)
     accuracies <- append(accuracies, accuracy)
+    sample_count <- append(sample_count, initial_train_size + k*i)
     print(paste("Accuracy:", gsub(" ", "", paste(accuracy * 100, "%"))))
 
     ## --------------------------------------------------------------------------------
@@ -55,10 +58,13 @@ ActiveLearningTest <- function(data, initial_train_size, k, iterations) {
     probabs <- attr(pred_validation, "probabilities")
     scores <- abs(probabs[,1] - probabs[,2])
 
-    scores_df <- data.frame(1:nrow(validating_set), probabs, scores)
-    colnames(scores_df) <- c('Index', 'Probability', 'Score')
-    scores_df <- scores_df[order(scores),]
-    #scores_df <- scores_df[sample(nrow(scores_df)),] # shuffle data
+    scores_df <- data.frame(1:nrow(validating_set), scores)
+    colnames(scores_df) <- c('Index', 'Score')
+    if (random) {
+      scores_df <- scores_df[sample(nrow(scores_df)),] # shuffle data
+    } else {
+      scores_df <- scores_df[order(scores),]
+    }
     scores_df_k <- scores_df[1:k,]
 
     chosen_samples <- validating_set[scores_df_k$Index,]
@@ -73,7 +79,9 @@ ActiveLearningTest <- function(data, initial_train_size, k, iterations) {
     validating_set <- validating_set[-scores_df_k$Index,]
 
     print(i)
-
-    return (accuracies)
     }
+    acc_data_frame <- data.frame(sample_count, accuracies)
+    colnames(acc_data_frame) <- c('LabelledDataSize', 'Accuracy')
+    return (acc_data_frame)
 }
+
