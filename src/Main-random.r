@@ -1,13 +1,14 @@
-rm(list = ls())
+rm(list = setdiff(ls(), "data"))
 
 source("utils.r")
 source("PrepareData.r")
 
 
-k <- 1
+k <- 10
+initial_train_size <- k
 
-raw_data = read.csv("../Datasets/JobChanges/aug_train.csv", header=T, sep=",", na.strings=c("","NA"))
-data <- prepareData(raw_data)
+# raw_data = read.csv("../Datasets/JobChanges/aug_train.csv", header=T, sep=",", na.strings=c("","NA"))
+# data <- prepareData(raw_data)
 
 ## --------------------------------------------------------------------------------
 ## ---------------- Podzielenie zbioru na pule i zbior testowy --------------------
@@ -22,9 +23,9 @@ data_test <- data[-test_idx,]
 ## --------------------------------------------------------------------------------
 
 ## set the seed to make your partition reproducible
-set.seed(123)
+set.seed(1234)
 
-initial_train_size <- 10
+initial_train_size <- 2
 #train_idx <- sample(seq_len(nrow(data_pool)), size = initial_train_size)
 
 training_set <- data_pool[1:initial_train_size, ]; # str(training_set)
@@ -33,8 +34,9 @@ training_set_random <- training_set;
 training_set_conf <- training_set;
 validating_set_random <- validating_set;
 validating_set_conf <- validating_set;
-
-for (i in 1:1000) {
+accuracies_random <- c()
+accuracies_conf <- c()
+for (i in 1:500) {
   
   ## ------------------------------------------------------------------------
   ## -----------Trenowanie modelu za pomocą zbioru trenującego---------------
@@ -65,6 +67,10 @@ for (i in 1:1000) {
   
   accuracy_random <- GetAccuracy(results_random)
   accuracy_conf <- GetAccuracy(results_conf)
+  
+  accuracies_random <- append(accuracies_random, accuracy_random)
+  accuracies_conf <- append(accuracies_conf, accuracy_conf)
+  
   print(paste("Accuracy Random:", gsub(" ", "", paste(accuracy_random * 100, "%"))))
   print(paste("Accuracy Confidence:", gsub(" ", "", paste(accuracy_conf * 100, "%"))))
   
@@ -83,7 +89,7 @@ for (i in 1:1000) {
   colnames(scores_conf_df) <- c('Index', 'Probability', 'Score')
 
   scores_random_df <-scores_random_df[sample(nrow(scores_random_df)),] # shuffle data
-  scores_conf_df <-scores_conf_df[order(scores_conf_df$Score),] # sort data
+  scores_conf_df <-scores_conf_df[order(-scores_conf_df$Score),] # sort data
   scores_random_df_k <- scores_random_df[1:k,]
   scores_conf_df_k <- scores_conf_df[1:k,]
   
@@ -104,3 +110,15 @@ for (i in 1:1000) {
   
   print("")
 }
+print(p)
+print(paste(accuracies_random, accuracies_conf))
+cols_random = c("sample_count", "accuracies_random")
+cols_conf = c("sample_count", "accuracies_conf")
+colnames(accuracies_random) = cols_random
+colnames(accuracies_conf) = cols_conf
+
+p = ggplot() + 
+  geom_line(data = accuracies_random, aes(x = sample_count, y = accuracies_random), color = "blue") +
+  geom_line(data = accuracies_conf, aes(x = sample_count, y = accuracies_conf), color = "red") +
+  xlab('sample_count') +
+  ylab('accuracies_conf')

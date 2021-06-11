@@ -4,7 +4,7 @@ source("utils.r")
 source("PrepareData.r")
 
 
-k <- 10
+k <- 1
 initial_train_size <- k
 
 raw_data = read.csv("../Datasets/JobChanges/aug_train.csv", header=T, sep=",", na.strings=c("","NA"))
@@ -26,6 +26,7 @@ data_test <- data[-test_idx,]
 ## set the seed to make your partition reproducible
 set.seed(123)
 
+initial_train_size <- 2
 #train_idx <- sample(seq_len(nrow(data_pool)), size = initial_train_size)
 
 training_set <- data_pool[1:initial_train_size, ]; # str(training_set)
