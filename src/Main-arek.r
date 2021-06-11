@@ -12,5 +12,8 @@ data <- prepareData(raw_data)
 k <- 10
 initial_train_size <- k
 
-ActiveLearningTest(data, initial_train_size, k, 20)
-ActiveLearningTest(data, initial_train_size, k, 30)
+# Demonstration of the active learning testing function
+accuracies1 <- ActiveLearningTest(data, initial_train_size, k, 20)
+accuracies2 <- ActiveLearningTest(data, initial_train_size, k, 30)
+
+

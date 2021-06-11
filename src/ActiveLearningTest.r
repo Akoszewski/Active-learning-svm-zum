@@ -1,6 +1,7 @@
 source("utils.r")
 
 ActiveLearningTest <- function(data, initial_train_size, k, iterations) {
+    accuracies <- c()
 
     ## --------------------------------------------------------------------------------
     ## ---------------- Podzielenie zbioru na pule i zbior testowy --------------------
@@ -44,6 +45,7 @@ ActiveLearningTest <- function(data, initial_train_size, k, iterations) {
     colnames(results) <- c('Predicted', 'Actual')
 
     accuracy <- GetAccuracy(results)
+    accuracies <- append(accuracies, accuracy)
     print(paste("Accuracy:", gsub(" ", "", paste(accuracy * 100, "%"))))
 
     ## --------------------------------------------------------------------------------
@@ -71,5 +73,7 @@ ActiveLearningTest <- function(data, initial_train_size, k, iterations) {
     validating_set <- validating_set[-scores_df_k$Index,]
 
     print(i)
+
+    return (accuracies)
     }
 }
