@@ -9,6 +9,8 @@ k <- 1
 
 raw_data = read.csv("../Datasets/JobChanges/aug_train.csv", header=T, sep=",", na.strings=c("","NA"))
 data <- prepareData(raw_data)
+set.seed(1235)
+data <-data[sample(nrow(data)),] # shuffle data
 
 ## --------------------------------------------------------------------------------
 ## ---------------- Podzielenie zbioru na pule i zbior testowy --------------------
@@ -38,7 +40,7 @@ validating_set_conf <- validating_set;
 accuracies_random <- c()
 accuracies_conf <- c()
 sample_count <- c()
-for (i in 1:100) {
+for (i in 1:20) {
   
   ## ------------------------------------------------------------------------
   ## -----------Trenowanie modelu za pomocą zbioru trenującego---------------

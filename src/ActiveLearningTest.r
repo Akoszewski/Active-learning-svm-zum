@@ -1,7 +1,6 @@
 source("utils.r")
 
 ActiveLearningTest <- function(data, initial_train_size, k, iterations, random) {
-    accuracies <- c()
 
 
     ## --------------------------------------------------------------------------------
@@ -16,12 +15,13 @@ ActiveLearningTest <- function(data, initial_train_size, k, iterations, random) 
     ## --Wybranie k próbek z puli do początkowego zbioru trenującego i podpisanie ich--
     ## --------------------------------------------------------------------------------
     
-    set.seed(1234)
+    set.seed(1235)
 
     training_set <- data_pool[1:initial_train_size, ]; # str(training_set)
     validating_set <- data_pool[-initial_train_size, ]; # str(validating_set)
 
     # loops <- nrow(validating_set)/k
+    accuracies <- c()
     sample_count <- c()
     for (i in 1:iterations) {
 
@@ -29,7 +29,7 @@ ActiveLearningTest <- function(data, initial_train_size, k, iterations, random) 
     ## -----------Trenowanie modelu za pomocą zbioru trenującego---------------
     ## ------------------------------------------------------------------------
 
-    model <- svm(target ~ ., data = training_set, probability = TRUE)
+    model <- svm(target ~ ., data = training_set, kernel = "linear", probability = TRUE)
     print(model)
 
     ## --------------------------------------------------------------------------------
@@ -63,7 +63,7 @@ ActiveLearningTest <- function(data, initial_train_size, k, iterations, random) 
     if (random) {
       scores_df <- scores_df[sample(nrow(scores_df)),] # shuffle data
     } else {
-      scores_df <- scores_df[order(scores),]
+      scores_df <- scores_df[order(scores_df$Score),]
     }
     scores_df_k <- scores_df[1:k,]
 
